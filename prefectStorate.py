@@ -1,5 +1,5 @@
 
-from prefect import task, Flow
+from prefect import task, Flow, Parameter, unmapped
 import prefect
 from prefect.schedules import IntervalSchedule
 from datetime import timedelta
@@ -10,19 +10,45 @@ from prefect.run_configs import UniversalRun
 from prefect.storage import GitHub
 
 @task
-def hello_task():
-    logger = prefect.context.get("logger")
-    logger.info("Hello world!")
-    
-# schedule to run every 2 minutes
-schedule = IntervalSchedule(
-    start_date=datetime.datetime.utcnow() + timedelta(seconds=1),
-    interval=timedelta(minutes = 2))
+def get_numbers(n):
+    return range(1, n + 1)
 
-# define Prefect flow
-# with Flow("hello-flow", schedule=schedule, run_config=UniversalRun()) as flow:
-with Flow("hello-flow", schedule=schedule) as flow:
-    hello_task()
+
+@task
+def inc(x):
+    return x + 1
+
+
+@task
+def add(x, y):
+    return x + y
+
+
+@task(log_stdout=True)
+def compute_sum(nums):
+    total = sum(nums)
+    print(f"total = {total}")
+    return total
+
+
+with Flow("Example: Mapping") as flow:
+    # The number of branches in the mapped pipeline
+    n = Parameter("n", default=3)
+
+    # Generate the initial items to map over
+    nums = get_numbers(n)  # [1, 2, 3]
+
+    # Apply `inc` to every item in `nums`
+    nums_2 = inc.map(nums)  # [2, 3, 4]
+
+    # Apply `add` to every item in `nums_2`, with `2` as the second argument.
+    nums_3 = add.map(nums_2, unmapped(2))  # [4, 5, 6]
+
+    # Compute the sum of all items in `nums_3`
+    total = compute_sum(nums_3)  # 15
+    
+# flow.run_config = UniversalRun(["vmg-B560M-AORUS-ELITE", "VMG"])
+
 flow.storage = GitHub(
             repo="tran-hong-khanh/prefect-flows-storate",
             path="prefectStorate.py",
