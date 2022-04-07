@@ -23,10 +23,10 @@ schedule = IntervalSchedule(
 # with Flow("hello-flow", schedule=schedule, run_config=UniversalRun()) as flow:
 with Flow("hello-flow", schedule=schedule) as flow:
     hello_task()
+flow.run_config = UniversalRun(["vmg-B560M-AORUS-ELITE"])
 flow.storage = GitHub(
             repo="tran-hong-khanh/prefect-flows-storate",
             path="prefectStorate.py",
             # host="https://gitlab.vmgmedia.vn/",
             # access_token_secret="glpat-su5uaLifXGHDhJXQRnfM"
         )
-flow.run_config = UniversalRun(["vmg-B560M-AORUS-ELITE"])
