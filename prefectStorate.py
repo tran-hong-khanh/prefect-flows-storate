@@ -31,7 +31,7 @@ def compute_sum(nums):
     return total
 
 
-with Flow("Example: Mapping") as flow:
+with Flow("Mapping") as flow:
     # The number of branches in the mapped pipeline
     n = Parameter("n", default=3)
 
