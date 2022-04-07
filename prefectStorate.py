@@ -7,7 +7,7 @@ import datetime
 from prefect.agent.docker import DockerAgent
 from prefect.storage import Local
 from prefect.run_configs import UniversalRun
-from prefect.storage import GitLab
+from prefect.storage import GitHub
 
 @task
 def hello_task():
@@ -23,10 +23,10 @@ schedule = IntervalSchedule(
 # with Flow("hello-flow", schedule=schedule, run_config=UniversalRun()) as flow:
 with Flow("hello-flow", schedule=schedule) as flow:
     hello_task()
-flow.storage = GitLab(
-            repo="269",
+flow.storage = GitHub(
+            repo="tran-hong-khanh/prefect-flows-storate",
             path="prefectStorate.py",
-            host="https://gitlab.vmgmedia.vn/",
-            access_token_secret="glpat-su5uaLifXGHDhJXQRnfM"
+            # host="https://gitlab.vmgmedia.vn/",
+            # access_token_secret="glpat-su5uaLifXGHDhJXQRnfM"
         )
 flow.run_config = UniversalRun(["vmg-B560M-AORUS-ELITE"])
