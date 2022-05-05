@@ -207,7 +207,7 @@ def load(encoded_standardized_data):
 # def main():
 schedule = IntervalSchedule(
     start_date=datetime.utcnow() + timedelta(seconds=1),
-    interval=timedelta(minutes=10),
+    interval=timedelta(minutes=30),
 )
 
 # conf = SparkConf()\
